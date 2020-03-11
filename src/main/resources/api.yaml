@@ -1,0 +1,98 @@
+openapi: 3.0.1
+info:
+  title: Sample API
+  version: 0.1.0
+  contact:
+    name: Vlad Carcu
+    email: vlad.carcu@softvision.com
+  description: Sample API
+servers:
+  - url: http://localhost:{port}/
+    description: local environment
+    variables:
+      port:
+        default: '8080'
+  - url: https://devserver.domain.com/{custom-base-path}
+    description: dev environment
+    variables:
+      custom-base-path:
+        default: 'sample'
+tags:
+  - name: student
+    description: Student resource related endpoints
+paths:
+  /student:
+    get:
+      tags:
+        - student
+      summary: get all students
+      description: returns a list of all the students, without any filtering
+      operationId: getStudents
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentDTO'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+components:
+  responses:
+    Unauthorized:
+      description: unauthorized
+    BadRequest:
+      description: bad request
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ValidationDTO'
+    ServerError:
+      description: internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorDTO'
+  schemas:
+    ValidationDTO:
+      type: object
+      properties:
+        code:
+          type: string
+        field:
+          type: string
+        description:
+          type: string
+    ErrorDTO:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    StudentDTO:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: id of the student
+        name:
+          type: string
+          example: Vlad Carcu
+          description: full name of the student
+        joinDate:
+          type: string
+          format: date
+          description: the day on which the student was created
