@@ -7,7 +7,7 @@ info:
     email: vlad.carcu@softvision.com
   description: Sample API
 servers:
-  - url: http://localhost:{port}/
+  - url: http://localhost:{port}
     description: local environment
     variables:
       port:
@@ -37,6 +37,112 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/StudentDTO'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags:
+        - student
+      summary: add a new student
+      description: adds a new student and returns it
+      operationId: addStudent
+      requestBody:
+        description: The data of the student to insert. Only the name is important. The joinDate and id will be generated automatically
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentDTO'
+            example:
+              name: Jane Doe
+      responses:
+        '200':
+          description: the created student
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentDTO'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    put:
+      tags:
+        - student
+      summary: update an existing student
+      description: updates the name of an existing student and returns it
+      operationId: updateStudent
+      requestBody:
+        description: The data of the student to update. Only the name is important. The joinDate and id can't be changed
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentDTO'
+            example:
+              name: Jane Doe
+              id: 3
+      responses:
+        '200':
+          description: the created student
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentDTO'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /student/{id}:
+    get:
+      tags:
+        - student
+      summary: get a student
+      description: returns the details for a student, based on id
+      operationId: getStudent
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentDTO'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags:
+        - student
+      summary: removes a student
+      description: deletes a student identified by id
+      operationId: removeStudent
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: success
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -81,7 +187,6 @@ components:
     StudentDTO:
       type: object
       required:
-        - id
         - name
       properties:
         id:

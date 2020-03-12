@@ -13,4 +13,7 @@ public interface StudentWSMapper {
 
     List<StudentDTO> toStudentDTOList(List<Student> students);
 
+    StudentDTO toStudentDTO(Student student);
+
+    Student toStudent(StudentDTO studentDTO);
 }
