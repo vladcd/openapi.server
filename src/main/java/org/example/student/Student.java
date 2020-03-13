@@ -7,9 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * @author <a href="vladc@ext.inditex.com">VLADC</a>
- */
 @Data
 @Builder
 @AllArgsConstructor

@@ -10,9 +10,6 @@ import org.springframework.stereotype.Component;
 
 import org.example.exception.NotFoundException;
 
-/**
- * @author <a href="vladc@ext.inditex.com">VLADC</a>
- */
 @Component
 public class StudentRepositoryInMemoryImpl implements StudentRepository {
 

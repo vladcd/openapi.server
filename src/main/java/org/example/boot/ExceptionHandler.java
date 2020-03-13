@@ -6,9 +6,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import org.example.exception.NotFoundException;
 
-/**
- * @author <a href="vladc@ext.inditex.com">VLADC</a>
- */
 @RestControllerAdvice
 public class ExceptionHandler {
 

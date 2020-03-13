@@ -5,7 +5,6 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,9 +12,6 @@ import org.example.exception.NotFoundException;
 import org.example.rest.api.StudentApi;
 import org.example.rest.model.StudentDTO;
 
-/**
- * @author <a href="vladc@ext.inditex.com">VLADC</a>
- */
 @RestController
 public class StudentController implements StudentApi {
 
