@@ -1,182 +1,110 @@
 openapi: 3.0.1
 info:
-  title: Sample API
+  title: Movie API
+  description: An API which manages movies and ratings
   version: 0.1.0
   contact:
     name: Vlad Carcu
-    email: vlad.carcu@softvision.com
-  description: Sample API
+    email: vlad.carcu@mailinator.com
 servers:
   - url: http://localhost:{port}
-    description: local environment
+    description: Local server environment
     variables:
       port:
         default: '8080'
-  - url: https://devserver.domain.com/{custom-base-path}
-    description: dev environment
-    variables:
-      custom-base-path:
-        default: 'sample'
+  - url: http://staging-api.example.com
+    description: Staging server environment
 tags:
-  - name: student
-    description: Student resource related endpoints
+  - name: movies
+    description: All the endpoints related to the movies resource
 paths:
-  /student:
+  /movies:
     get:
+      operationId: getMovies
+      summary: Returns a list of movies
+      description: Returns a list with all the movies, without any filters
       tags:
-        - student
-      summary: get all students
-      description: returns a list of all the students, without any filtering
-      operationId: getStudents
+        - movies
       responses:
         '200':
-          description: success
+          description: Ok response
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/StudentDTO'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+                  $ref: '#/components/schemas/MovieDTO'
+                example:
+                  - id: 1
+                    name: Matrix
+                    director: Wachowski Persons
+                    actors:
+                      - Keanu Reeves
+                      - Lawrence Fishburne
         '500':
           $ref: '#/components/responses/ServerError'
     post:
+      operationId: addNewMovie
+      description: Adds a new movie
       tags:
-        - student
-      summary: add a new student
-      description: adds a new student and returns it
-      operationId: addStudent
+        - movies
       requestBody:
-        description: The data of the student to insert. Only the name is important. The joinDate and id will be generated automatically
+        description: The movie to create
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/StudentDTO'
+              $ref: '#/components/schemas/MovieDTO'
             example:
-              name: Jane Doe
+              name: Matrix
+              director: Wachowski Persons
+              actors:
+                - Keanu Reeves
+                - Lawrence Fishburne
       responses:
         '200':
-          description: the created student
+          description: Ok response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StudentDTO'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+                $ref: '#/components/schemas/MovieDTO'
         '500':
           $ref: '#/components/responses/ServerError'
-    put:
+  /movies/{id}/rate/{value}:
+    post:
+      operationId: rateMovie
+      description: Rates a movie
       tags:
-        - student
-      summary: update an existing student
-      description: updates the name of an existing student and returns it
-      operationId: updateStudent
-      requestBody:
-        description: The data of the student to update. Only the name is important. The joinDate and id can't be changed
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/StudentDTO'
-            example:
-              name: Jane Doe
-              id: 3
-      responses:
-        '200':
-          description: the created student
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/StudentDTO'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '500':
-          $ref: '#/components/responses/ServerError'
-  /student/{id}:
-    get:
-      tags:
-        - student
-      summary: get a student
-      description: returns the details for a student, based on id
-      operationId: getStudent
+        - movies
       parameters:
-        - in: path
-          name: id
+        - name: id
+          in: path
+          description: Movie id
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: value
+          in: path
+          description: Rating (1-5)
           required: true
           schema:
             type: integer
             format: int32
       responses:
         '200':
-          description: success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/StudentDTO'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '500':
-          $ref: '#/components/responses/ServerError'
-    delete:
-      tags:
-        - student
-      summary: removes a student
-      description: deletes a student identified by id
-      operationId: removeStudent
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-            format: int32
-      responses:
-        '200':
-          description: success
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+          description: Ok response
         '500':
           $ref: '#/components/responses/ServerError'
 components:
   responses:
-    Unauthorized:
-      description: unauthorized
-    BadRequest:
-      description: bad request
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/ValidationDTO'
     ServerError:
-      description: internal server error
+      description: server error
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorDTO'
   schemas:
-    ValidationDTO:
-      type: object
-      properties:
-        code:
-          type: string
-        field:
-          type: string
-        description:
-          type: string
     ErrorDTO:
       type: object
       properties:
@@ -184,20 +112,19 @@ components:
           type: string
         message:
           type: string
-    StudentDTO:
+    MovieDTO:
       type: object
-      required:
-        - name
       properties:
         id:
           type: integer
-          format: int32
-          description: id of the student
         name:
           type: string
-          example: Vlad Carcu
-          description: full name of the student
-        joinDate:
+        director:
           type: string
-          format: date
-          description: the day on which the student was created
+        actors:
+          type: array
+          items:
+            type: string
+        rating:
+          type: number
+          format: double
